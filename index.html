@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Супер Калькулятор Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#4a6fa5">
+    <meta name="description" content="Мощный калькулятор с научными функциями и конвертером валют">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icon-192.png">
+    <style>
+        /* ВЕСЬ ВАШ CSS КОД ОСТАЕТСЯ ЗДЕСЬ БЕЗ ИЗМЕНЕНИЙ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+            transition: background 0.5s ease;
+        }
+        
+        .app-container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            color: white;
+        }
+        
+        .app-title {
+            font-size: 1.5em;
+            font-weight: 600;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+        }
+        
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+        
+        .calculator {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        /* ... И ТАК ДАЛЕЕ ВЕСЬ ВАШ CSS ... */
+        
+    </style>
+</head>
+<body>
+    <!-- ВЕСЬ ВАШ HTML КОД ОСТАЕТСЯ ЗДЕСЬ -->
+    <div class="app-container">
+        <div class="header">
+            <div class="app-title">Супер Калькулятор Pro</div>
+            <div class="controls">
+                <button class="control-btn" onclick="toggleTheme()">🌓</button>
+                <button class="control-btn" onclick="toggleSound()">🔊</button>
+                <button class="control-btn" onclick="showHelp()">❓</button>
+            </div>
+        </div>
+        
+        <div class="calculator">
+            <div class="display-container">
+                <div class="history" id="history"></div>
+                <div class="display" id="display">0</div>
+            </div>
+            
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('basic')">Обычный</div>
+                <div class="tab" onclick="switchTab('scientific')">Научный</div>
+                <div class="tab" onclick="switchTab('converter')">Конвертер</div>
+            </div>
+            
+            <!-- ВСЕ КНОПКИ КАЛЬКУЛЯТОРА -->
+            <div id="basic-buttons" class="buttons">
+                <button class="memory" onclick="memoryClear()">MC</button>
+                <button class="memory" onclick="memoryRecall()">MR</button>
+                <button class="memory" onclick="memoryAdd()">M+</button>
+                <button class="memory" onclick="memorySubtract()">M-</button>
+                
+                <button class="clear" onclick="clearAll()">C</button>
+                <button class="clear" onclick="backspace()">⌫</button>
+                <button class="operator" onclick="appendOperator('/')">÷</button>
+                <button class="operator" onclick="appendOperator('*')">×</button>
+                
+                <button class="number" onclick="appendNumber('7')">7</button>
+                <button class="number" onclick="appendNumber('8')">8</button>
+                <button class="number" onclick="appendNumber('9')">9</button>
+                <button class="operator" onclick="appendOperator('-')">-</button>
+                
+                <button class="number" onclick="appendNumber('4')">4</button>
+                <button class="number" onclick="appendNumber('5')">5</button>
+                <button class="number" onclick="appendNumber('6')">6</button>
+                <button class="operator" onclick="appendOperator('+')">+</button>
+                
+                <button class="number" onclick="appendNumber('1')">1</button>
+                <button class="number" onclick="appendNumber('2')">2</button>
+                <button class="number" onclick="appendNumber('3')">3</button>
+                <button class="equals double-height" onclick="calculate()">=</button>
+                
+                <button class="number zero" onclick="appendNumber('0')">0</button>
+                <button class="number" onclick="appendDecimal()">.</button>
+                <button class="scientific" onclick="scientificFunction('percent')">%</button>
+            </div>
+            
+            <!-- НАУЧНЫЕ КНОПКИ -->
+            <div id="scientific-buttons" class="hidden">
+                <div class="scientific-buttons">
+                    <button class="scientific sci-small" onclick="scientificFunction('sqrt')">√</button>
+                    <button class="scientific sci-small" onclick="scientificFunction('square')">x²</button>
+                    <button class="scientific sci-small" onclick="scientificFunction('cube')">x³</button>
+                    <button class="scientific sci-small" onclick="scientificFunction('power')">x^y</button>
+                    <button class="scientific sci-small" onclick="scientificFunction('log')">log</button>
+                    
+                    <button class="scientific sci-small" onclick="scientificFunction('sin')">sin</button>
+                    <button class="scientific sci-small" onclick="scientificFunction('cos')">cos</button>
+                    <button class="scientific sci-small" onclick="scientificFunction('tan')">tan</button>
+                    <button class="scientific sci-small" onclick="scientificFunction('factorial')">x!</button>
+                    <button class="scientific sci-small" onclick="scientificFunction('exp')">e^x</button>
+                    
+                    <button class="constant sci-small" onclick="appendConstant('pi')">π</button>
+                    <button class="constant sci-small" onclick="appendConstant('e')">e</button>
+                    <button class="scientific sci-small" onclick="scientificFunction('ln')">ln</button>
+                    <button class="scientific sci-small" onclick="scientificFunction('reciprocal')">1/x</button>
+                    <button class="scientific sci-small" onclick="toggleNegative()">±</button>
+                </div>
+                
+                <div class="buttons">
+                    <button class="memory" onclick="memoryClear()">MC</button>
+                    <button class="memory" onclick="memoryRecall()">MR</button>
+                    <button class="memory" onclick="memoryAdd()">M+</button>
+                    <button class="memory" onclick="memorySubtract()">M-</button>
+                    
+                    <button class="clear" onclick="clearAll()">C</button>
+                    <button class="clear" onclick="backspace()">⌫</button>
+                    <button class="operator" onclick="appendOperator('/')">÷</button>
+                    <button class="operator" onclick="appendOperator('*')">×</button>
+                    
+                    <button class="number" onclick="appendNumber('7')">7</button>
+                    <button class="number" onclick="appendNumber('8')">8</button>
+                    <button class="number" onclick="appendNumber('9')">9</button>
+                    <button class="operator" onclick="appendOperator('-')">-</button>
+                    
+                    <button class="number" onclick="appendNumber('4')">4</button>
+                    <button class="number" onclick="appendNumber('5')">5</button>
+                    <button class="number" onclick="appendNumber('6')">6</button>
+                    <button class="operator" onclick="appendOperator('+')">+</button>
+                    
+                    <button class="number" onclick="appendNumber('1')">1</button>
+                    <button class="number" onclick="appendNumber('2')">2</button>
+                    <button class="number" onclick="appendNumber('3')">3</button>
+                    <button class="equals double-height" onclick="calculate()">=</button>
+                    
+                    <button class="number zero" onclick="appendNumber('0')">0</button>
+                    <button class="number" onclick="appendDecimal()">.</button>
+                    <button class="scientific" onclick="scientificFunction('percent')">%</button>
+                </div>
+            </div>
+            
+            <!-- КОНВЕРТЕР -->
+            <div id="converter-tab" class="hidden">
+                <div class="converter">
+                    <h3>💱 Конвертер валют</h3>
+                    <div class="converter-row">
+                        <input type="number" class="converter-input" id="converter-amount" placeholder="Сумма" value="1000" min="0" step="0.01">
+                        <select class="converter-select" id="converter-from">
+                            <option value="RUB">RUB - Российский рубль</option>
+                            <option value="USD">USD - Доллар США</option>
+                            <option value="EUR">EUR - Евро</option>
+                            <option value="GBP">GBP - Фунт стерлингов</option>
+                            <option value="JPY">JPY - Японская иена</option>
+                            <option value="CNY">CNY - Китайский юань</option>
+                            <option value="CHF">CHF - Швейцарский франк</option>
+                            <option value="CAD">CAD - Канадский доллар</option>
+                            <option value="AUD">AUD - Австралийский доллар</option>
+                            <option value="TRY">TRY - Турецкая лира</option>
+                        </select>
+                    </div>
+                    
+                    <div class="converter-row" style="justify-content: center;">
+                        <button class="swap-button" onclick="swapCurrencies()">⇅</button>
+                    </div>
+                    
+                    <div class="converter-row">
+                        <select class="converter-select" id="converter-to">
+                            <option value="USD">USD - Доллар США</option>
+                            <option value="EUR">EUR - Евро</option>
+                            <option value="RUB">RUB - Российский рубль</option>
+                            <option value="GBP">GBP - Фунт стерлингов</option>
+                            <option value="JPY">JPY - Японская иена</option>
+                            <option value="CNY">CNY - Китайский юань</option>
+                            <option value="CHF">CHF - Швейцарский франк</option>
+                            <option value="CAD">CAD - Канадский доллар</option>
+                            <option value="AUD">AUD - Австралийский доллар</option>
+                            <option value="TRY">TRY - Турецкая лира</option>
+                        </select>
+                    </div>
+                    
+                    <button class="number double-width" onclick="convertCurrency()" style="margin: 10px auto; display: block; padding: 15px;">
+                        Конвертировать валюту
+                    </button>
+                    
+                    <button class="scientific double-width" onclick="updateRates()" style="margin: 0 auto; display: block; padding: 10px; font-size: 0.9em;">
+                        🔄 Обновить курсы
+                    </button>
+                    
+                    <div class="converter-result" id="converter-result">
+                        Нажмите "Конвертировать валюту"
+                    </div>
+                    <div class="converter-info" id="converter-info">
+                        Загрузка актуальных курсов...
+                    </div>
+                </div>
+                
+                <div class="converter" style="margin-top: 20px;">
+                    <h3>📏 Конвертер единиц</h3>
+                    
+                    <div class="converter-row">
+                        <input type="number" class="converter-input" id="unit-amount" placeholder="Значение" value="1" step="0.01">
+                        <select class="converter-select" id="unit-type" onchange="changeUnitType()">
+                            <option value="length">Длина</option>
+                            <option value="weight">Вес</option>
+                            <option value="temperature">Температура</option>
+                            <option value="area">Площадь</option>
+                            <option value="volume">Объем</option>
+                        </select>
+                    </div>
+                    
+                    <div class="converter-row">
+                        <select class="converter-select" id="unit-from">
+                            <!-- Опции заполняются динамически -->
+                        </select>
+                        <select class="converter-select" id="unit-to">
+                            <!-- Опции заполняются динамически -->
+                        </select>
+                    </div>
+                    
+                    <button class="number double-width" onclick="convertUnits()" style="margin: 10px auto; display: block; padding: 15px;">
+                        Конвертировать единицы
+                    </button>
+                    
+                    <div class="converter-result" id="unit-result">
+                        Выберите единицы измерения
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // РЕГИСТРАЦИЯ SERVICE WORKER ДЛЯ PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('service-worker.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker зарегистрирован');
+                    })
+                    .catch(function(error) {
+                        console.log('Ошибка регистрации ServiceWorker:', error);
+                    });
+            });
+        }
+
+        // ВЕСЬ ВАШ JAVASCRIPT КОД ОСТАЕТСЯ ЗДЕСЬ
+        // Манифест приложения
+        const manifest = {
+            "name": "Супер Калькулятор Pro",
+            "short_name": "Калькулятор",
+            "description": "Мощный калькулятор с научными функциями и конвертером",
+            "start_url": "/",
+            "display": "standalone",
+            "orientation": "portrait",
+            "theme_color": "#4a6fa5",
+            "background_color": "#ffffff",
+            "icons": [
+                {
+                    "src": "icon-192.png",
+                    "sizes": "192x192",
+                    "type": "image/png"
+                },
+                {
+                    "src": "icon-512.png",
+                    "sizes": "512x512",
+                    "type": "image/png"
+                }
+            ],
+            "categories": ["utilities", "productivity"]
+        };
+        
+        // Основные переменные калькулятора
+        let display = document.getElementById('display');
+        let history = document.getElementById('history');
+        let currentInput = '0';
+        let previousValue = 0;
+        let currentOperator = '';
+        let shouldReset = false;
+        let memory = 0;
+        let isDarkTheme = false;
+        let soundEnabled = true;
+        let currentTab = 'basic';
+
+        // ... И ДАЛЕЕ ВЕСЬ ОСТАЛЬНОЙ JAVASCRIPT КОД ...
+        // (все функции: updateDisplay(), appendNumber(), calculate() и т.д.)
+
+        // Инициализация при загрузке
+        window.onload = function() {
+            // Ваша функция init() и весь код инициализации
+            updateDisplay();
+            
+            const savedTheme = localStorage.getItem('calculatorTheme');
+            if (savedTheme === 'dark') {
+                toggleTheme();
+            }
+            
+            const savedSound = localStorage.getItem('calculatorSound');
+            if (savedSound === 'false') {
+                soundEnabled = false;
+                updateSoundButton();
+            }
+            
+            initUnitConverter();
+            loadExchangeRates();
+        };
+    </script>
+</body>
+</html>
